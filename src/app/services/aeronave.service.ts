@@ -7,6 +7,8 @@ import { Aeronave } from "../models/aeronave.model";
 @Injectable({providedIn:"root"})
 export class AeronaveService{
     private readonly urlBase = `${environment.apiBaseUrl}/aeronaves`;
+    private apiUrl = `${environment.apiBaseUrl}/aeronaves`;
+
     constructor(private http:HttpClient){}
     
     listar(): Observable<Aeronave[]> {
@@ -16,4 +18,8 @@ export class AeronaveService{
     buscarPorId(id:number): Observable<Aeronave> {
         return this.http.get<Aeronave>(`${this.urlBase}/${id}`);
     }
+
+    salvarAeronave(aeronave: Aeronave): Observable<Aeronave> {
+    return this.http.post<Aeronave>(this.apiUrl, aeronave);
+  }
 }

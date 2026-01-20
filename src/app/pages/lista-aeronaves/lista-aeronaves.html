@@ -1,32 +1,134 @@
-<h2>Aeronaves</h2>
+<div class="container">
+  <h2>Cadastro de Aeronave</h2>
 
-<table mat-table [dataSource]="aeronaves" class="mat-elevation-z1">
+  <form (ngSubmit)="salvar()" #formAeronave="ngForm" class="form-aeronave">
 
-<ng-container matColumnDef="id">
-    <th mat-header-cell *matHeaderCellDef>ID</th>
-    <td mat-cell *matCellDef="let row">{{ row.id }}</td>
-</ng-container>
+    <!-- Nome -->
+    <mat-form-field appearance="fill">
+      <mat-label>Nome</mat-label>
+      <input
+        matInput
+        type="text"
+        name="nome"
+        [(ngModel)]="novaAeronave.nome"
+        required
+        placeholder="Ex: Phenom 300"
+      />
+    </mat-form-field>
 
-<ng-container matColumnDef="marca">
-    <th mat-header-cell *matHeaderCellDef>Marca</th>
-    <td mat-cell *matCellDef="let row">{{ row.marca }}</td>
-</ng-container>
+    <!-- Marca -->
+    <mat-form-field appearance="fill">
+      <mat-label>Marca</mat-label>
+      <mat-select
+        name="marca"
+        [(ngModel)]="novaAeronave.marca"
+        required
+        placeholder="Selecione uma marca"
+      >
+        <mat-option *ngFor="let marca of marcas" [value]="marca">
+          {{ marca }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-<ng-container matColumnDef="nome">
-    <th mat-header-cell *matHeaderCellDef>Nome</th>
-    <td mat-cell *matCellDef="let row">{{ row.nome }}</td>
-</ng-container>
+    <!-- Ano -->
+    <mat-form-field appearance="fill">
+      <mat-label>Ano</mat-label>
+      <input
+        matInput
+        type="number"
+        name="ano"
+        [(ngModel)]="novaAeronave.ano"
+        required
+        min="1900"
+        placeholder="2024"
+      />
+    </mat-form-field>
 
-<ng-container matColumnDef="ano">
-    <th mat-header-cell *matHeaderCellDef>Ano</th>
-    <td mat-cell *matCellDef="let row">{{ row.ano }}</td>
-</ng-container>
+    <!-- Descrição -->
+    <mat-form-field appearance="fill" class="descricao-field">
+      <mat-label>Descrição</mat-label>
+      <textarea
+        matInput
+        name="descricao"
+        [(ngModel)]="novaAeronave.descricao"
+        rows="2"
+        placeholder="Informações adicionais..."
+      ></textarea>
+    </mat-form-field>
 
-<ng-container matColumnDef="vendido">
-    <th mat-header-cell *matHeaderCellDef>Vendido</th>
-    <td mat-cell *matCellDef="let row">{{ row.vendido ? 'Sim' : 'Não' }}</td>
-</ng-container>
+    <!-- Vendido -->
+    <mat-checkbox
+      name="vendido"
+      [(ngModel)]="novaAeronave.vendido"
+      style="margin-right: 16px;"
+    >
+      Vendido
+    </mat-checkbox>
 
-<tr mat-header-row *matHeaderRowDef="colunas"></tr>
-<tr mat-row *matRowDef="let row; columns: colunas"></tr>
-</table>
+    <!-- Botão Salvar -->
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="!formAeronave.form.valid"
+    >
+      Salvar Aeronave
+    </button>
+  </form>
+
+  <hr />
+
+  <h2>Lista de Aeronaves</h2>
+
+  <div *ngIf="carregando" class="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <table mat-table [dataSource]="aeronaves" class="mat-elevation-z1" *ngIf="!carregando">
+    <!-- ID -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>ID</th>
+      <td mat-cell *matCellDef="let row">{{ row.id }}</td>
+    </ng-container>
+
+    <!-- Marca -->
+    <ng-container matColumnDef="marca">
+      <th mat-header-cell *matHeaderCellDef>Marca</th>
+      <td mat-cell *matCellDef="let row">{{ row.marca }}</td>
+    </ng-container>
+
+    <!-- Nome -->
+    <ng-container matColumnDef="nome">
+      <th mat-header-cell *matHeaderCellDef>Nome</th>
+      <td mat-cell *matCellDef="let row">{{ row.nome }}</td>
+    </ng-container>
+
+    <!-- Ano -->
+    <ng-container matColumnDef="ano">
+      <th mat-header-cell *matHeaderCellDef>Ano</th>
+      <td mat-cell *matCellDef="let row">{{ row.ano }}</td>
+    </ng-container>
+
+    <!-- Vendido -->
+    <ng-container matColumnDef="vendido">
+      <th mat-header-cell *matHeaderCellDef>Vendido</th>
+      <td mat-cell *matCellDef="let row">{{ row.vendido ? 'Sim' : 'Não' }}</td>
+    </ng-container>
+
+    <!-- Criado -->
+    <ng-container matColumnDef="criado">
+      <th mat-header-cell *matHeaderCellDef>Criado</th>
+      <td mat-cell *matCellDef="let row">{{ row.criado | date:'dd/MM/yyyy HH:mm' }}</td>
+    </ng-container>
+
+    <!-- Atualizado -->
+    <ng-container matColumnDef="atualizado">
+      <th mat-header-cell *matHeaderCellDef>Atualizado</th>
+      <td mat-cell *matCellDef="let row">{{ row.atualizado | date:'dd/MM/yyyy HH:mm' }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="colunas"></tr>
+    <tr mat-row *matRowDef="let row; columns: colunas"></tr>
+  </table>
+</div>

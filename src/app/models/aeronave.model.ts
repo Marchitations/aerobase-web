@@ -8,14 +8,14 @@ export enum Marca{
 }
 
 export interface Aeronave{
-    id:number;
+    id?:number;
     nome:string;
     marca:Marca;
     ano:number;
     descricao:string;
     vendido:boolean;
-    criado:string;
-    atualizado:string;
+    criado?:Date;
+    atualizado?:Date;
 }
 
 export const MARCAS:Marca[] = Object.values(Marca)
