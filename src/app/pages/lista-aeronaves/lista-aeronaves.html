@@ -79,56 +79,108 @@
 
   <hr />
 
-  <h2>Lista de Aeronaves</h2>
-
-  <div *ngIf="carregando" class="loading">
-    <mat-spinner diameter="50"></mat-spinner>
+  <!-- Painel de estatísticas -->
+<div class="painel-estatisticas" *ngIf="!carregando && aeronaves.length > 0">
+  <div class="card-estatistica">
+    <h4>Aeronaves não vendidas</h4>
+    <h3>{{ totalNaoVendidas }}</h3>
   </div>
 
-  <table mat-table [dataSource]="aeronaves" class="mat-elevation-z1" *ngIf="!carregando">
-    <!-- ID -->
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>ID</th>
-      <td mat-cell *matCellDef="let row">{{ row.id }}</td>
-    </ng-container>
+  <div class="card-estatistica">
+    <h4>Essa Semana</h4>
+     <h3>{{ ultimaSemana }}</h3>
+  </div>
 
-    <!-- Marca -->
-    <ng-container matColumnDef="marca">
-      <th mat-header-cell *matHeaderCellDef>Marca</th>
-      <td mat-cell *matCellDef="let row">{{ row.marca }}</td>
-    </ng-container>
-
-    <!-- Nome -->
-    <ng-container matColumnDef="nome">
-      <th mat-header-cell *matHeaderCellDef>Nome</th>
-      <td mat-cell *matCellDef="let row">{{ row.nome }}</td>
-    </ng-container>
-
-    <!-- Ano -->
-    <ng-container matColumnDef="ano">
-      <th mat-header-cell *matHeaderCellDef>Ano</th>
-      <td mat-cell *matCellDef="let row">{{ row.ano }}</td>
-    </ng-container>
-
-    <!-- Vendido -->
-    <ng-container matColumnDef="vendido">
-      <th mat-header-cell *matHeaderCellDef>Vendido</th>
-      <td mat-cell *matCellDef="let row">{{ row.vendido ? 'Sim' : 'Não' }}</td>
-    </ng-container>
-
-    <!-- Criado -->
-    <ng-container matColumnDef="criado">
-      <th mat-header-cell *matHeaderCellDef>Criado</th>
-      <td mat-cell *matCellDef="let row">{{ row.criado | date:'dd/MM/yyyy HH:mm' }}</td>
-    </ng-container>
-
-    <!-- Atualizado -->
-    <ng-container matColumnDef="atualizado">
-      <th mat-header-cell *matHeaderCellDef>Atualizado</th>
-      <td mat-cell *matCellDef="let row">{{ row.atualizado | date:'dd/MM/yyyy HH:mm' }}</td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="colunas"></tr>
-    <tr mat-row *matRowDef="let row; columns: colunas"></tr>
-  </table>
+  <div class="card-estatistica lista-decadas">
+    <h4>Por década</h4>
+    <div class="grid-decadas">
+      <div class="item-decada" *ngFor="let item of aeronavesPorDecada">
+        <span class="decada">{{ item.decada }}</span>
+        <span class="quantidade">{{ item.quantidade }}</span>
+      </div>
+    </div>
+  </div>
 </div>
+
+
+ <h2>Lista de Aeronaves</h2>
+
+<table
+  mat-table
+  [dataSource]="aeronaves"
+  multiTemplateDataRows
+  class="mat-elevation-z1"
+>
+
+  <!-- ID -->
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>ID</th>
+    <td mat-cell *matCellDef="let row">{{ row.id }}</td>
+  </ng-container>
+
+  <!-- Marca -->
+  <ng-container matColumnDef="marca">
+    <th mat-header-cell *matHeaderCellDef>Marca</th>
+    <td mat-cell *matCellDef="let row">{{ row.marca }}</td>
+  </ng-container>
+
+  <!-- Nome -->
+  <ng-container matColumnDef="nome">
+    <th mat-header-cell *matHeaderCellDef>Nome</th>
+    <td mat-cell *matCellDef="let row">{{ row.nome }}</td>
+  </ng-container>
+
+  <!-- Ano -->
+  <ng-container matColumnDef="ano">
+    <th mat-header-cell *matHeaderCellDef>Ano</th>
+    <td mat-cell *matCellDef="let row">{{ row.ano }}</td>
+  </ng-container>
+
+  <!-- Vendido -->
+  <ng-container matColumnDef="vendido">
+    <th mat-header-cell *matHeaderCellDef>Vendido</th>
+    <td mat-cell *matCellDef="let row">{{ row.vendido ? 'Sim' : 'Não' }}</td>
+  </ng-container>
+
+  <!-- Header -->
+  <tr mat-header-row *matHeaderRowDef="colunas"></tr>
+
+  <!-- Linha principal -->
+  <tr
+    mat-row
+    *matRowDef="let row; columns: colunas;"
+    class="linha-aeronave"
+    [class.selecionada]="aeronaveSelecionada?.id === row.id"
+    (click)="selecionarAeronave(row)"
+  ></tr>
+
+  <!-- Linha de detalhes -->
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let row" [attr.colspan]="colunas.length">
+      <div
+        class="detalhes-aeronave"
+        *ngIf="aeronaveSelecionada?.id === row.id"
+      >
+        <div class="info">
+          <p><strong>Descrição:</strong> {{ row.descricao || 'Sem descrição' }}</p>
+          <p><strong>Criado em:</strong> {{ row.criado | date: 'dd/MM/yyyy HH:mm' }}</p>
+          <p><strong>Atualizado em:</strong> {{ row.atualizado | date: 'dd/MM/yyyy HH:mm' }}</p>
+        </div>
+
+        <div class="botoes">
+          <button mat-flat-button color="primary" (click)="abrirDialogEdicao(row); $event.stopPropagation()"> Editar</button>
+          <button mat-stroked-button color="warn">Excluir</button>
+        </div>
+      </div>
+    </td>
+  </ng-container>
+
+  <!-- RowDef da linha de detalhes -->
+  <tr
+      mat-row
+      *matRowDef="let row; columns: ['expandedDetail']"
+      class="linha-detalhes"
+      [class.visivel]="aeronaveSelecionada?.id === row.id"
+  ></tr>
+</table>
+

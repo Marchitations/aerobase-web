@@ -1,6 +1,6 @@
 /* ===== PALETA DE CORES ===== */
 :root {
-  --azul-claro: #a6c9e5;      /* Light blue suave */
+  --azul-claro: #95cfff;      /* Light blue suave */
   --azul-escuro: #1565c0;     /* Azul mais forte */
   --branco: #ffffff;
 }
@@ -132,3 +132,202 @@ hr {
     width: 100%;
   }
 }
+
+/* ===== PAINEL DE ESTATÍSTICAS ===== */
+.painel-estatisticas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.card-estatistica {
+  background-color: var(--azul-claro);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 16px 20px;
+  min-width: 180px;
+  text-align: center;
+}
+
+.card-estatistica h3 {
+  margin: 0;
+  font-size: 2rem;
+  color: var(--azul-escuro);
+}
+
+.card-estatistica p {
+  margin: 4px 0 0;
+  color: #333;
+  font-weight: 500;
+}
+
+.lista-decadas {
+  flex: 1;
+  text-align: left;
+  max-width: 600px;
+}
+
+.lista-decadas h4 {
+  margin-bottom: 12px;
+  color: var(--azul-escuro);
+  font-weight: 600;
+}
+
+/* Grid de décadas */
+.grid-decadas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 👈 3 décadas por linha */
+  gap: 8px 12px;
+}
+
+.item-decada {
+  background-color: #98d4ff;
+  border: 1px solid #dce4f0;
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.item-decada .decada {
+  color: var(--azul-escuro);
+  font-weight: 600;
+}
+
+.item-decada .quantidade {
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .grid-decadas {
+    grid-template-columns: repeat(2, 1fr); /* Em telas menores: 2 por linha */
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-decadas {
+    grid-template-columns: 1fr; /* Em telas pequenas: 1 por linha */
+  }
+}
+
+/* ===== DETALHES EXPANSÍVEIS ===== */
+.linha-aeronave {
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.linha-aeronave:hover {
+  background-color: rgba(21, 101, 192, 0.08);
+}
+
+.linha-aeronave.selecionada {
+  background-color: rgba(21, 101, 192, 0.15);
+}
+
+.linha-detalhes td {
+  padding: 0;
+  background-color: #f5f9fc;
+}
+
+.detalhes-aeronave {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px 20px;
+  border-top: 1px solid #cfd8dc;
+}
+
+.detalhes-aeronave .info p {
+  margin: 4px 0;
+  color: #333;
+}
+
+.detalhes-aeronave .botoes {
+  display: flex;
+  gap: 8px;
+}
+
+button[mat-flat-button],
+button[mat-stroked-button] {
+  font-weight: 500;
+  min-width: 90px;
+}
+
+button[color="warn"] {
+  border: 1px solid #e57373;
+}
+
+/* === AJUSTE DE ESPAÇAMENTO ENTRE LINHAS === */
+table {
+  border-collapse: collapse !important;
+  width: 100%;
+}
+
+.mat-mdc-row,
+.mat-mdc-header-row {
+  height: 40px; /* Reduz a altura das linhas */
+  line-height: 1.2;
+  transition: background-color 0.25s ease;
+}
+
+/* Remove espaços verticais entre linhas */
+.mat-mdc-table .mat-mdc-row td,
+.mat-mdc-table .mat-mdc-header-row th {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Cor de destaque quando selecionada */
+.linha-aeronave.selecionada {
+  background-color: rgba(21, 101, 192, 0.15);
+}
+
+/* Linha de detalhes: só ocupa espaço quando visível */
+.linha-detalhes td {
+  padding: 0;
+  background-color: #f5f9fc;
+}
+
+/* Remove espaçamento “fantasma” */
+tr.linha-detalhes:not(:has(.detalhes-aeronave)) {
+  display: none;
+}
+
+/* Quando a linha de detalhes aparece */
+.detalhes-aeronave {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px 20px;
+  border-top: 1px solid #cfd8dc;
+  animation: expandir 0.2s ease-out;
+}
+
+/* Botões */
+.detalhes-aeronave .botoes {
+  display: flex;
+  gap: 8px;
+}
+
+/* Pequena animação */
+@keyframes expandir {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.linha-detalhes:not(.visivel) {
+  display: none !important;
+}
+
+

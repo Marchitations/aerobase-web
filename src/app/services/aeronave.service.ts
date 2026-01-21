@@ -7,10 +7,9 @@ import { Aeronave } from "../models/aeronave.model";
 @Injectable({providedIn:"root"})
 export class AeronaveService{
     private readonly urlBase = `${environment.apiBaseUrl}/aeronaves`;
-    private apiUrl = `${environment.apiBaseUrl}/aeronaves`;
 
     constructor(private http:HttpClient){}
-    
+
     listar(): Observable<Aeronave[]> {
         return this.http.get<Aeronave[]>(this.urlBase);
     }
@@ -20,6 +19,15 @@ export class AeronaveService{
     }
 
     salvarAeronave(aeronave: Aeronave): Observable<Aeronave> {
-    return this.http.post<Aeronave>(this.apiUrl, aeronave);
-  }
+    return this.http.post<Aeronave>(this.urlBase, aeronave);
+    }
+
+     atualizar(aeronave: Aeronave): Observable<Aeronave> {
+    // 👇 envia todos os campos obrigatórios pro backend
+    return this.http.put<Aeronave>(`${this.urlBase}/${aeronave.id}`, aeronave);
+    }
+
+    excluir(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.urlBase}/${id}`);
+    }
 }
