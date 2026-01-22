@@ -18,6 +18,10 @@ import { ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { EditarAeronaveDialog } from './editar-lista-aeronaves';
 import { MatDialogModule } from '@angular/material/dialog';
+import { ConfirmarExclusaoDialog } from './confirmar-exclusao-dialog';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
+
 
 
 @Component({
@@ -36,6 +40,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatSelectModule,
     MatOption,
     MatCheckboxModule,
+    MatIconModule,
     MatRow,
     MatDialogModule,
 
@@ -47,6 +52,10 @@ export class ListaAeronaves implements OnInit {
   carregando = false;
   colunas: string[] = ['id', 'marca', 'nome', 'ano', 'vendido'];
   aeronaves: Aeronave[] = [];
+  aeronavesFiltradas: Aeronave[] = [];
+  termoPesquisa: string = '';
+
+  private pesquisaSubject = new Subject<string>();
 
   totalNaoVendidas = 0;
   aeronavesPorDecada: { decada: string; quantidade: number }[] = [];
@@ -74,26 +83,28 @@ export class ListaAeronaves implements OnInit {
 
   ngOnInit(): void {
     this.carregarLista();
+
+    this.pesquisaSubject
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((termo) => this.executarPesquisa(termo));
   }
 
   carregarLista(): void {
   this.carregando = true;
-
-  this.api.listar()
-    .pipe(finalize(() => {
-      this.carregando = false; // garante que sempre volte a false
-      this.cdr.detectChanges(); // força o Angular a renderizar
-    }))
-    .subscribe({
+    this.api.listar().subscribe({
       next: (lista) => {
         this.aeronaves = lista ?? [];
+        this.aeronavesFiltradas = [...this.aeronaves];
         this.calcularEstatisticas();
+        this.carregando = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Erro ao carregar aeronaves:', err);
         this.snackBar.open('Erro ao carregar aeronaves', 'Fechar', { duration: 3000 });
+        this.carregando = false;
       },
-    });
+    })
 }
 
   salvar(): void {
@@ -105,7 +116,6 @@ export class ListaAeronaves implements OnInit {
     this.api.salvarAeronave(this.novaAeronave).subscribe({
       next: () => {
         this.snackBar.open('Aeronave salva com sucesso!', 'Fechar', { duration: 3000 });
-        // reseta o formulário
         this.novaAeronave = {
           nome: '',
           marca: Marca.Embraer,
@@ -114,7 +124,7 @@ export class ListaAeronaves implements OnInit {
           vendido: false
         };
         this.carregarLista();
-        this.cdr.detectChanges();
+        setTimeout(() => this.cdr.detectChanges(), 0);
       },
       error: (err) => {
         console.error('Erro ao salvar aeronave:', err);
@@ -124,10 +134,8 @@ export class ListaAeronaves implements OnInit {
   }
 
   private calcularEstatisticas(): void {
-    // Total de aeronaves não vendidas
     this.totalNaoVendidas = this.aeronaves.filter((a) => !a.vendido).length;
 
-    // Agrupamento por década
     const mapa = new Map<string, number>();
     this.aeronaves.forEach((a) => {
       const decada = Math.floor(a.ano / 10) * 10;
@@ -135,7 +143,6 @@ export class ListaAeronaves implements OnInit {
       mapa.set(chave, (mapa.get(chave) ?? 0) + 1);
     });
 
-    // Converter em array para exibir no template
     this.aeronavesPorDecada = Array.from(mapa, ([decada, quantidade]) => ({
       decada,
       quantidade,
@@ -148,7 +155,6 @@ export class ListaAeronaves implements OnInit {
     this.ultimaSemana = this.aeronaves.filter((a) => {
       if (!a.criado) return false;
       const dataCriacao = new Date(a.criado);
-      // compara apenas a data (ignorando hora)
       const dataSemHora = new Date(
         dataCriacao.getFullYear(),
         dataCriacao.getMonth(),
@@ -159,7 +165,6 @@ export class ListaAeronaves implements OnInit {
   }
 
    selecionarAeronave(aeronave: Aeronave): void {
-    // se clicar novamente na mesma aeronave, "fecha" o painel
     if (this.aeronaveSelecionada?.id === aeronave.id) {
       this.aeronaveSelecionada = null;
     } else {
@@ -186,6 +191,52 @@ export class ListaAeronaves implements OnInit {
           },
         });
       }
+    });
+  }
+
+
+  abrirDialogExclusao(aeronave: Aeronave): void {
+    const dialogRef = this.dialog.open(ConfirmarExclusaoDialog, {
+      width: '400px',
+      data: { id: aeronave.id, nome: aeronave.nome },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmado) => {
+      if (confirmado) {
+        this.api.excluir(aeronave.id!).subscribe({
+          next: () => {
+            this.snackBar.open('Aeronave excluída com sucesso!', 'Fechar', { duration: 3000 });
+            this.carregarLista();
+          },
+        error: (err) => {
+          console.error('Erro ao excluir aeronave:', err);
+          this.snackBar.open('Erro ao excluir aeronave', 'Fechar', { duration: 3000 });
+        },
+        });
+      }
+    });
+  }
+
+  onTermoDigitado(): void {
+    this.pesquisaSubject.next(this.termoPesquisa);
+  }
+
+  executarPesquisa(termo: string): void {
+    const termoLimpo = termo.trim();
+    this.carregando = true;
+
+    this.api.buscarPorTermo(termoLimpo).subscribe({
+      next: (lista) => {
+        this.aeronavesFiltradas = lista ?? [];
+        this.calcularEstatisticas();
+        this.carregando = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Erro ao buscar aeronaves:', err);
+        this.snackBar.open('Erro ao buscar aeronaves', 'Fechar', { duration: 3000 });
+        this.carregando = false;
+      },
     });
   }
 

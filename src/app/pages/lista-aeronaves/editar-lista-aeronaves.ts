@@ -68,16 +68,42 @@ import { CommonModule } from '@angular/common';
   `,
   styles: [
     `
+      :host {
+        display: block;
+        padding: 16px;
+      }
+
+      h2[mat-dialog-title] {
+        margin: 0 0 16px;
+        font-weight: 600;
+      }
+
       .form-container {
         display: flex;
         flex-direction: column;
         gap: 12px;
         width: 100%;
         min-width: 300px;
+        padding: 8px 4px 16px;
+      }
+
+      mat-dialog-content {
+        padding: 8px 16px;
+      }
+
+      mat-form-field {
+        width: 100%;
+      }
+
+      mat-dialog-actions {
+        margin-top: 16px;
+        padding: 8px 16px;
       }
     `,
   ],
 })
+
+
 export class EditarAeronaveDialog {
   aeronave: Aeronave;
   marcas = Object.values(Marca);
@@ -86,7 +112,6 @@ export class EditarAeronaveDialog {
     public dialogRef: MatDialogRef<EditarAeronaveDialog>,
     @Inject(MAT_DIALOG_DATA) public data: Aeronave
   ) {
-    // Clonamos o objeto para evitar mutações diretas
     this.aeronave = { ...data };
   }
 

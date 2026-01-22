@@ -1,38 +1,22 @@
-<div class="container">
-  <h2>Cadastro de Aeronave</h2>
+<div class="form-cadastro card">
+  <h3>Cadastrar nova aeronave</h3>
 
-  <form (ngSubmit)="salvar()" #formAeronave="ngForm" class="form-aeronave">
-
-    <!-- Nome -->
-    <mat-form-field appearance="fill">
+  <form (ngSubmit)="salvar()" #form="ngForm" class="formulario">
+    <mat-form-field appearance="fill" class="campo">
       <mat-label>Nome</mat-label>
-      <input
-        matInput
-        type="text"
-        name="nome"
-        [(ngModel)]="novaAeronave.nome"
-        required
-        placeholder="Ex: Phenom 300"
-      />
+      <input matInput name="nome" [(ngModel)]="novaAeronave.nome" required />
     </mat-form-field>
 
-    <!-- Marca -->
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="fill" class="campo">
       <mat-label>Marca</mat-label>
-      <mat-select
-        name="marca"
-        [(ngModel)]="novaAeronave.marca"
-        required
-        placeholder="Selecione uma marca"
-      >
+      <mat-select name="marca" [(ngModel)]="novaAeronave.marca" required>
         <mat-option *ngFor="let marca of marcas" [value]="marca">
           {{ marca }}
         </mat-option>
       </mat-select>
     </mat-form-field>
 
-    <!-- Ano -->
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="fill" class="campo pequeno">
       <mat-label>Ano</mat-label>
       <input
         matInput
@@ -40,55 +24,46 @@
         name="ano"
         [(ngModel)]="novaAeronave.ano"
         required
-        min="1900"
-        placeholder="2024"
       />
     </mat-form-field>
 
-    <!-- Descrição -->
-    <mat-form-field appearance="fill" class="descricao-field">
+    <mat-form-field appearance="fill" class="campo grande">
       <mat-label>Descrição</mat-label>
       <textarea
         matInput
+        rows="2"
         name="descricao"
         [(ngModel)]="novaAeronave.descricao"
-        rows="2"
-        placeholder="Informações adicionais..."
       ></textarea>
     </mat-form-field>
 
-    <!-- Vendido -->
     <mat-checkbox
       name="vendido"
       [(ngModel)]="novaAeronave.vendido"
-      style="margin-right: 16px;"
+      class="campo"
+      >Vendido</mat-checkbox
     >
-      Vendido
-    </mat-checkbox>
 
-    <!-- Botão Salvar -->
-    <button
-      mat-flat-button
-      color="primary"
-      type="submit"
-      [disabled]="!formAeronave.form.valid"
-    >
-      Salvar Aeronave
-    </button>
+    <div class="botoes-form">
+      <button mat-flat-button color="primary" type="submit">
+        Salvar
+      </button>
+    </div>
   </form>
+</div>
 
-  <hr />
-
-  <!-- Painel de estatísticas -->
-<div class="painel-estatisticas" *ngIf="!carregando && aeronaves.length > 0">
+<div
+  class="painel-estatisticas card"
+  *ngIf="!carregando && aeronavesFiltradas.length > 0"
+>
   <div class="card-estatistica">
-    <h4>Aeronaves não vendidas</h4>
+    <p>Aeronaves não vendidas</p>
     <h3>{{ totalNaoVendidas }}</h3>
   </div>
 
   <div class="card-estatistica">
-    <h4>Essa Semana</h4>
-     <h3>{{ ultimaSemana }}</h3>
+    <p>Essa Semana</p>
+    <h3>{{ ultimaSemana }}</h3>
   </div>
 
   <div class="card-estatistica lista-decadas">
@@ -102,59 +77,66 @@
   </div>
 </div>
 
+<div class="barra-pesquisa card">
+  <mat-form-field appearance="outline" class="campo-pesquisa">
+    <mat-label>Pesquisar aeronaves</mat-label>
+    <span matPrefix><mat-icon>search</mat-icon>&nbsp;</span>
+    <input
+      matInput
+      placeholder="Digite parte do nome, marca, ano ou descrição"
+      [(ngModel)]="termoPesquisa"
+      (input)="onTermoDigitado()"
+    />
+    <button
+      *ngIf="termoPesquisa"
+      mat-icon-button
+      matSuffix
+      aria-label="Limpar pesquisa"
+      (click)="termoPesquisa=''; onTermoDigitado();"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+</div>
 
- <h2>Lista de Aeronaves</h2>
+<div *ngIf="!carregando && aeronavesFiltradas.length === 0" class="mensagem-vazia">
+  <mat-icon>info</mat-icon>
+  Nenhuma aeronave encontrada.
+</div>
+
+<h2>Lista de Aeronaves</h2>
 
 <table
   mat-table
-  [dataSource]="aeronaves"
+  [dataSource]="aeronavesFiltradas"
   multiTemplateDataRows
-  class="mat-elevation-z1"
+  class="mat-elevation-z1 tabela-aeronaves"
 >
-
-  <!-- ID -->
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef>ID</th>
     <td mat-cell *matCellDef="let row">{{ row.id }}</td>
   </ng-container>
 
-  <!-- Marca -->
   <ng-container matColumnDef="marca">
     <th mat-header-cell *matHeaderCellDef>Marca</th>
     <td mat-cell *matCellDef="let row">{{ row.marca }}</td>
   </ng-container>
 
-  <!-- Nome -->
   <ng-container matColumnDef="nome">
     <th mat-header-cell *matHeaderCellDef>Nome</th>
     <td mat-cell *matCellDef="let row">{{ row.nome }}</td>
   </ng-container>
 
-  <!-- Ano -->
   <ng-container matColumnDef="ano">
     <th mat-header-cell *matHeaderCellDef>Ano</th>
     <td mat-cell *matCellDef="let row">{{ row.ano }}</td>
   </ng-container>
 
-  <!-- Vendido -->
   <ng-container matColumnDef="vendido">
     <th mat-header-cell *matHeaderCellDef>Vendido</th>
     <td mat-cell *matCellDef="let row">{{ row.vendido ? 'Sim' : 'Não' }}</td>
   </ng-container>
 
-  <!-- Header -->
-  <tr mat-header-row *matHeaderRowDef="colunas"></tr>
-
-  <!-- Linha principal -->
-  <tr
-    mat-row
-    *matRowDef="let row; columns: colunas;"
-    class="linha-aeronave"
-    [class.selecionada]="aeronaveSelecionada?.id === row.id"
-    (click)="selecionarAeronave(row)"
-  ></tr>
-
-  <!-- Linha de detalhes -->
   <ng-container matColumnDef="expandedDetail">
     <td mat-cell *matCellDef="let row" [attr.colspan]="colunas.length">
       <div
@@ -168,19 +150,38 @@
         </div>
 
         <div class="botoes">
-          <button mat-flat-button color="primary" (click)="abrirDialogEdicao(row); $event.stopPropagation()"> Editar</button>
-          <button mat-stroked-button color="warn">Excluir</button>
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="abrirDialogEdicao(row); $event.stopPropagation()"
+          >
+            Editar
+          </button>
+          <button
+            mat-stroked-button
+            color="warn"
+            (click)="abrirDialogExclusao(row); $event.stopPropagation()"
+          >
+            Excluir
+          </button>
         </div>
       </div>
     </td>
   </ng-container>
 
-  <!-- RowDef da linha de detalhes -->
+  <tr mat-header-row *matHeaderRowDef="colunas"></tr>
+
   <tr
-      mat-row
-      *matRowDef="let row; columns: ['expandedDetail']"
-      class="linha-detalhes"
-      [class.visivel]="aeronaveSelecionada?.id === row.id"
+    mat-row
+    *matRowDef="let row; columns: colunas"
+    class="linha-aeronave"
+    [class.selecionada]="aeronaveSelecionada?.id === row.id"
+    (click)="selecionarAeronave(row)"
+  ></tr>
+
+  <tr
+    mat-row
+    *matRowDef="let row; columns: ['expandedDetail']"
+    class="linha-detalhes"
   ></tr>
 </table>
-

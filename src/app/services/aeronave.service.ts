@@ -19,15 +19,27 @@ export class AeronaveService{
     }
 
     salvarAeronave(aeronave: Aeronave): Observable<Aeronave> {
-    return this.http.post<Aeronave>(this.urlBase, aeronave);
+        return this.http.post<Aeronave>(this.urlBase, aeronave);
     }
 
      atualizar(aeronave: Aeronave): Observable<Aeronave> {
-    // 👇 envia todos os campos obrigatórios pro backend
-    return this.http.put<Aeronave>(`${this.urlBase}/${aeronave.id}`, aeronave);
+        return this.http.put<Aeronave>(`${this.urlBase}/${aeronave.id}`, aeronave);
     }
 
     excluir(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.urlBase}/${id}`);
+        return this.http.delete<void>(`${this.urlBase}/${id}`);
     }
+
+    buscarPorTermo(termo: string): Observable<Aeronave[]> {
+        termo = termo.trim();
+
+        if (!termo) {
+            return this.listar();
+        }
+
+        return this.http.get<Aeronave[]>(`${this.urlBase}/find`, {
+            params: { term: termo },
+        });
+    }
+
 }

@@ -1,267 +1,163 @@
-/* ===== PALETA DE CORES ===== */
-:root {
-  --azul-claro: #95cfff;      /* Light blue suave */
-  --azul-escuro: #1565c0;     /* Azul mais forte */
-  --branco: #ffffff;
+body {
+  background-color: #e8f4fc;
+  color: #003366;
+  font-family: "Roboto", sans-serif;
 }
 
-/* ===== LAYOUT GERAL ===== */
-.container {
-  min-height: 100vh;
-  padding: 24px 32px;
-  box-sizing: border-box;
-  font-family: 'Roboto', sans-serif;
-  color: #1e1e1e;
-
-  /* Gradiente de fundo suave */
-  background: linear-gradient(
-    160deg,
-    var(--azul-claro) 0%,
-    #dbeaf7 40%,
-    var(--branco) 100%
-  );
+.card {
+  background-color: #ffffff;
+  padding: 16px 24px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-h2 {
-  color: var(--azul-escuro);
-  margin-top: 16px;
+.form-cadastro h3 {
   margin-bottom: 16px;
-  font-weight: 600;
+  color: #003366;
 }
 
-/* ===== FORMULÁRIO ===== */
-form.form-aeronave {
+.formulario {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   gap: 16px;
-  margin-bottom: 24px;
-  background-color: var(--branco);
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease;
-}
-
-form.form-aeronave:hover {
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-}
-
-mat-form-field {
-  flex: 1 1 200px;
-  min-width: 180px;
-}
-
-mat-checkbox {
-  color: var(--azul-escuro);
-  font-weight: 500;
-}
-
-/* ===== BOTÕES ===== */
-button[mat-flat-button] {
-  background-color: var(--azul-escuro);
-  color: var(--branco);
-  font-weight: 500;
-  padding: 8px 20px;
-  border-radius: 6px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-button[mat-flat-button]:hover {
-  background-color: #0d47a1;
-  transform: translateY(-1px);
-}
-
-/* ===== TABELA ===== */
-table {
-  width: 100%;
-  background-color: var(--branco);
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-}
-
-th {
-  background-color: var(--azul-escuro);
-  color: var(--branco);
-  font-weight: 600;
-  text-align: left;
-  padding: 10px 12px;
-}
-
-td {
-  padding: 10px 12px;
-  border-bottom: 1px solid #cfd8dc;
-}
-
-tr:hover td {
-  background-color: rgba(21, 101, 192, 0.05);
-}
-
-.mat-elevation-z1 {
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-/* ===== SPINNER E ESTADOS ===== */
-.loading {
-  display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 24px;
 }
 
-hr {
-  border: none;
-  border-top: 1px solid #cfd8dc;
-  margin: 24px 0;
+.campo {
+  flex: 1 1 250px;
 }
 
-/* ===== RESPONSIVIDADE ===== */
-@media (max-width: 768px) {
-  form.form-aeronave {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  mat-form-field {
-    width: 100%;
-  }
-
-  button[mat-flat-button] {
-    width: 100%;
-  }
+.campo.pequeno {
+  flex: 1 1 120px;
 }
 
-/* ===== PAINEL DE ESTATÍSTICAS ===== */
+.campo.grande {
+  flex: 2 1 400px;
+}
+
+.botoes-form {
+  margin-top: 8px;
+}
+
 .painel-estatisticas {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-around;
   gap: 16px;
-  margin-bottom: 24px;
-}
-
-.card-estatistica {
-  background-color: var(--azul-claro);
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  padding: 16px 20px;
-  min-width: 180px;
   text-align: center;
 }
 
-.card-estatistica h3 {
-  margin: 0;
-  font-size: 2rem;
-  color: var(--azul-escuro);
+.card-estatistica {
+  background-color: #f4faff;
+  border-left: 4px solid #1976d2;
+  border-radius: 8px;
+  padding: 16px 28px;
+  flex: 1 1 150px;
 }
 
 .card-estatistica p {
-  margin: 4px 0 0;
-  color: #333;
-  font-weight: 500;
+  margin: 0;
+  font-weight: 700;
+  color: #003366;
+  font-size: 1.1rem;
 }
 
-.lista-decadas {
-  flex: 1;
-  text-align: left;
-  max-width: 600px;
-}
-
-.lista-decadas h4 {
-  margin-bottom: 12px;
-  color: var(--azul-escuro);
+.card-estatistica h3 {
+  margin: 30px 0 0 0;
+  color: #1976d2;
+  font-size: 1.6rem;
   font-weight: 600;
 }
 
-/* Grid de décadas */
-.grid-decadas {
+.lista-decadas .grid-decadas {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 👈 3 décadas por linha */
-  gap: 8px 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 8px;
 }
 
 .item-decada {
-  background-color: #98d4ff;
-  border: 1px solid #dce4f0;
-  border-radius: 6px;
-  padding: 8px 12px;
   display: flex;
   justify-content: space-between;
+  padding: 4px 8px;
+  background-color: #e3f2fd;
+  border-radius: 6px;
+}
+
+.barra-pesquisa {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 16px;
+}
+
+.campo-pesquisa {
+  width: 100%;
+  max-width: 400px;
+}
+
+.mensagem-vazia {
+  display: flex;
   align-items: center;
+  gap: 8px;
+  color: #607d8b;
+  font-style: italic;
+  margin: 12px 0;
+}
+
+.tabela-aeronaves {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 8px;
+  border-collapse: collapse;
+}
+
+th {
+  background-color: #1976d2;
+  color: white;
   font-weight: 500;
-  color: #1a1a1a;
 }
 
-.item-decada .decada {
-  color: var(--azul-escuro);
-  font-weight: 600;
+td,
+th {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.item-decada .quantidade {
-  color: #333;
-}
-
-@media (max-width: 768px) {
-  .grid-decadas {
-    grid-template-columns: repeat(2, 1fr); /* Em telas menores: 2 por linha */
-  }
-}
-
-@media (max-width: 480px) {
-  .grid-decadas {
-    grid-template-columns: 1fr; /* Em telas pequenas: 1 por linha */
-  }
-}
-
-/* ===== DETALHES EXPANSÍVEIS ===== */
-.linha-aeronave {
+tr.linha-aeronave {
   cursor: pointer;
-  transition: background-color 0.25s ease;
+  transition: background-color 0.2s ease-in;
 }
 
-.linha-aeronave:hover {
-  background-color: rgba(21, 101, 192, 0.08);
+tr.linha-aeronave:hover {
+  background-color: rgba(25, 118, 210, 0.08);
 }
 
-.linha-aeronave.selecionada {
-  background-color: rgba(21, 101, 192, 0.15);
+tr.selecionada {
+  background-color: rgba(25, 118, 210, 0.15);
 }
 
 .linha-detalhes td {
   padding: 0;
-  background-color: #f5f9fc;
+  border: none;
+  margin: 0;
 }
 
 .detalhes-aeronave {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 16px 20px;
-  border-top: 1px solid #cfd8dc;
+  background-color: #f0f8ff;
+  padding: 12px 16px;
+  border-left: 3px solid #1976d2;
 }
 
-.detalhes-aeronave .info p {
-  margin: 4px 0;
-  color: #333;
+table,
+tr,
+td,
+th {
+  margin: 0;
+  border-spacing: 0;
 }
 
-.detalhes-aeronave .botoes {
-  display: flex;
-  gap: 8px;
-}
-
-button[mat-flat-button],
-button[mat-stroked-button] {
-  font-weight: 500;
-  min-width: 90px;
-}
-
-button[color="warn"] {
-  border: 1px solid #e57373;
-}
-
-/* === AJUSTE DE ESPAÇAMENTO ENTRE LINHAS === */
 table {
   border-collapse: collapse !important;
   width: 100%;
@@ -269,7 +165,7 @@ table {
 
 .mat-mdc-row,
 .mat-mdc-header-row {
-  height: 40px; /* Reduz a altura das linhas */
+  height: 40px;
   line-height: 1.2;
   transition: background-color 0.25s ease;
 }
@@ -282,7 +178,6 @@ table {
   border-bottom: 1px solid #e0e0e0;
 }
 
-/* Cor de destaque quando selecionada */
 .linha-aeronave.selecionada {
   background-color: rgba(21, 101, 192, 0.15);
 }
@@ -293,7 +188,7 @@ table {
   background-color: #f5f9fc;
 }
 
-/* Remove espaçamento “fantasma” */
+/* Remove espaçamento fantasma */
 tr.linha-detalhes:not(:has(.detalhes-aeronave)) {
   display: none;
 }
@@ -308,7 +203,6 @@ tr.linha-detalhes:not(:has(.detalhes-aeronave)) {
   animation: expandir 0.2s ease-out;
 }
 
-/* Botões */
 .detalhes-aeronave .botoes {
   display: flex;
   gap: 8px;
@@ -325,9 +219,3 @@ tr.linha-detalhes:not(:has(.detalhes-aeronave)) {
     transform: translateY(0);
   }
 }
-
-.linha-detalhes:not(.visivel) {
-  display: none !important;
-}
-
-
