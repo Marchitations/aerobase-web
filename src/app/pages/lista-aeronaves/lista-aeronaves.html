@@ -151,6 +151,13 @@
 
         <div class="botoes">
           <button
+            mat-stroked-button
+            color="accent"
+            (click)="abrirDialogHistorico(row); $event.stopPropagation()"
+          >
+            Histórico
+          </button>
+          <button
             mat-flat-button
             color="primary"
             (click)="abrirDialogEdicao(row); $event.stopPropagation()"

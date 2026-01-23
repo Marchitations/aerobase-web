@@ -3,7 +3,7 @@ import { Aeronave, Marca } from '../../models/aeronave.model';
 import { AeronaveService } from '../../services/aeronave.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { finalize } from 'rxjs';
+import { finalize, pipe } from 'rxjs';
 import { MatRow, MatRowDef, MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -21,8 +21,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ConfirmarExclusaoDialog } from './confirmar-exclusao-dialog';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
-
-
+import { HistoricoAeronaveDialog } from './historico-aeronave.dialog';
 
 @Component({
   selector: 'app-lista-aeronaves',
@@ -128,7 +127,15 @@ export class ListaAeronaves implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao salvar aeronave:', err);
-        this.snackBar.open('Erro ao salvar aeronave', 'Fechar', { duration: 3000 });
+
+        const mensagem =
+          err?.error?.erro || 
+          err?.error?.message || 
+          'Erro ao salvar aeronave';
+
+        this.snackBar.open(mensagem, 'Fechar', {
+          duration: 4000
+        });
       }
     });
   }
@@ -187,7 +194,15 @@ export class ListaAeronaves implements OnInit {
           },
           error: (err) => {
             console.error('Erro ao atualizar aeronave:', err);
-            this.snackBar.open('Erro ao atualizar aeronave', 'Fechar', { duration: 3000 });
+
+            const mensagem =
+              err?.error?.erro || 
+              err?.error?.message || 
+              'Erro ao atualizar aeronave';
+
+            this.snackBar.open(mensagem, 'Fechar', {
+              duration: 4000
+            });
           },
         });
       }
@@ -240,4 +255,19 @@ export class ListaAeronaves implements OnInit {
     });
   }
 
+
+  abrirDialogHistorico(aeronave: Aeronave): void {
+    this.api.getHistorico(aeronave.id!).subscribe({
+      next: (historico) => {
+        this.dialog.open(HistoricoAeronaveDialog, {
+          width: '700px',
+          data: { historico },
+        });
+      },
+      error: (err) => {
+        console.error('Erro ao carregar histórico:', err);
+        this.snackBar.open('Erro ao carregar histórico da aeronave.', 'Fechar', { duration: 3000 });
+      }
+    });
+  }
 }

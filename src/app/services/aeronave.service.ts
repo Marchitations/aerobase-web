@@ -42,4 +42,8 @@ export class AeronaveService{
         });
     }
 
+    getHistorico(id: number) {
+        return this.http.get<any[]>(`${this.urlBase}/${id}/historico`);
+    }
+
 }

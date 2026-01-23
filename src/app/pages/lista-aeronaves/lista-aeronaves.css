@@ -208,7 +208,7 @@ tr.linha-detalhes:not(:has(.detalhes-aeronave)) {
   gap: 8px;
 }
 
-/* Pequena animação */
+/* Pequena animação ao expandir a tabela com os detalhes */
 @keyframes expandir {
   from {
     opacity: 0;
